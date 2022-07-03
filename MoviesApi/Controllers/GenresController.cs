@@ -19,7 +19,7 @@ namespace MoviesApi.Controllers
             return Ok(genres);
         }
         [HttpPost]
-        public async Task<IActionResult> GetAllAsync(CreateGenraDto dto)
+        public async Task<IActionResult> GetAllAsync(GenraDto dto)
         {
             var genra = new Genre
             {
@@ -30,5 +30,35 @@ namespace MoviesApi.Controllers
                 return Ok(genra);
 
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> updateAsync(byte id, [FromBody] GenraDto dto)
+        {
+
+            var genre = await _context.Genres.SingleOrDefaultAsync(g=>g.Id==id);
+
+            if (genre == null)
+                return NotFound($"No genre was found with ID: {id}");
+
+            genre.Name = dto.Name;
+
+            _context.SaveChanges();
+
+            return Ok(genre);
+
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var genre = await _context.Genres.SingleOrDefaultAsync(g => g.Id == id);
+
+            if (genre == null)
+                return NotFound($"No genre was found with ID: {id}");
+
+            _context.Remove(genre);
+            _context.SaveChanges();
+            return Ok(genre);
+
+        }
+
     }
 }
